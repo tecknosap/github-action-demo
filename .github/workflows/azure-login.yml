@@ -23,7 +23,13 @@ jobs:
     - name: Azure Login using OIDC
       uses: azure/login@v1
       with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}           # Azure AD app client ID (from federated identity setup)
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}           # Azure AD tenant ID
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} # Azure subscription ID
-        allow-no-subscriptions: true                        # Optional: set to true if no subscription access is required
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}           
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}           
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
+        allow-no-subscriptions: true                        
+
+    - name: Create resource group
+      run: |
+        az group create \
+          --name my-github-rg \
+          --location eastus
