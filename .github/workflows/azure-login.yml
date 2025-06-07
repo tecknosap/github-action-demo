@@ -1,24 +1,29 @@
+# GitHub Actions workflow to authenticate to Azure using OIDC (Federated Credentials)
 name: Azure Login via Federated Identity
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main           # Triggers the workflow on push to main branch
+  workflow_dispatch:    # Still allows manual triggering via UI
 
 permissions:
-  id-token: write       # Required for OIDC
-  contents: read        # To read repo contents
+  id-token: write       # Required to request the OIDC token
+  contents: read        # Required to access the repository content
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Runner image
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+      # Checks out your repository so the workflow can access the files
 
     - name: Azure Login using OIDC
       uses: azure/login@v1
       with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-        allow-no-subscriptions: true
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}           # Azure AD app client ID (from federated identity setup)
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}           # Azure AD tenant ID
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} # Azure subscription ID
+        allow-no-subscriptions: true                        # Optional: set to true if no subscription access is required
