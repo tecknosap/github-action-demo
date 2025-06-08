@@ -19,3 +19,20 @@ variable "subscription_id" {
   
 }
 
+
+
+variable "storage1" {
+ type = string
+ default = "githubstorage123"
+  
+}
+
+variable "container" {
+type = string
+default = "storage-container"
+  
+}
+
+
+
+
