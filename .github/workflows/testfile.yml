@@ -33,6 +33,17 @@ jobs:
       run: |
         az group create \
           --name my-github-action-rg \
-          --location eastus    
+          --location eastus  
+          
+    - name: Create storage account
+      run: |
+        az storage account create \
+          --name mygithubstorage123 \
+          --resource-group my-github-rg \
+          --location eastus \
+          --sku Standard_LRS \
+          --kind StorageV2 \
+          --access-tier Hot
+     
         
    
