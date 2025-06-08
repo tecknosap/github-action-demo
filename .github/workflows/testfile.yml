@@ -1,16 +1,62 @@
 
 
+# name: first yaml file
+
+# on:
+#  push:
+#   branches:
+#    - main
+
+# permissions:
+#   id-token: write       # Required to request the OIDC token
+#   contents: read        # Required to access the repository content
+
+
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest  # Runner image
+
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v3
+#       # Checks out your repository so the workflow can access the files
+
+#     - name: Azure Login using OIDC
+#       uses: azure/login@v1
+#       with:
+#         client-id: ${{ secrets.AZURE_CLIENT_ID }}           
+#         tenant-id: ${{ secrets.AZURE_TENANT_ID }}           
+#         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
+#         allow-no-subscriptions: true 
+        
+#     - name: Create resource group # new rg created
+#       run: |
+#         az group create \
+#           --name my-github-action-rg \
+#           --location eastus  
+          
+#     - name: Create storage account
+#       run: |
+#         az storage account create \
+#           --name mygithubstorage123456 \
+#           --resource-group my-github-action-rg \
+#           --location eastus \
+#           --sku Standard_LRS \
+#           --kind StorageV2 \
+#           --access-tier Hot
+     
+        
+   
 name: first yaml file
 
 on:
- push:
-  branches:
-   - main
+  push:
+    branches:
+      - main
 
 permissions:
   id-token: write       # Required to request the OIDC token
   contents: read        # Required to access the repository content
-
 
 jobs:
   deploy:
@@ -19,31 +65,33 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-      # Checks out your repository so the workflow can access the files
 
     - name: Azure Login using OIDC
       uses: azure/login@v1
       with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}           
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}           
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
-        allow-no-subscriptions: true 
-        
-    - name: Create resource group # new rg created
-      run: |
-        az group create \
-          --name my-github-action-rg \
-          --location eastus  
-          
-    - name: Create storage account
-      run: |
-        az storage account create \
-          --name mygithubstorage123456 \
-          --resource-group my-github-action-rg \
-          --location eastus \
-          --sku Standard_LRS \
-          --kind StorageV2 \
-          --access-tier Hot
-     
-        
-   
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        allow-no-subscriptions: true
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.6.6  # Or whichever version you're using
+
+    - name: Terraform Init
+      run: terraform init
+      working-directory: ./github-action-demo   # Change this if your main.tf is elsewhere
+
+    - name: Terraform Validate
+      run: terraform validate
+      working-directory: ./github-action-demo
+
+    - name: Terraform Plan
+      run: terraform plan
+      working-directory: ./github-action-demo
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve
+      working-directory: ./github-action-demo
+
