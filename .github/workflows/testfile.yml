@@ -38,7 +38,7 @@ jobs:
     - name: Create storage account
       run: |
         az storage account create \
-          --name mygithubstorage123 \
+          --name mygithubstorage123456 \
           --resource-group my-github-action-rg \
           --location eastus \
           --sku Standard_LRS \
