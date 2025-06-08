@@ -81,17 +81,17 @@ jobs:
 
     - name: Terraform Init
       run: terraform init
-      working-directory: .github-action-demo   # Change this if your main.tf is elsewhere
+      working-directory: .   # Change this if your main.tf is elsewhere
 
     - name: Terraform Validate
       run: terraform validate
-      working-directory: github-action-demo
+      working-directory: .
 
     - name: Terraform Plan
       run: terraform plan
-      working-directory: github-action-demo
+      working-directory: .
 
     - name: Terraform Apply
       run: terraform apply -auto-approve
-      working-directory: github-action-demo
+      working-directory: .
 
