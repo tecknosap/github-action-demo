@@ -1,20 +1,17 @@
 terraform {
   required_providers {
     azurerm = {
-      source = "hashicorp/azurerm"
+      source  = "hashicorp/azurerm"
       version = "4.33.0"
     }
   }
 }
 
 provider "azurerm" {
-  # Configuration options
-  features {
-    
-  }
-  subscription_id = var.subscription_id 
-}
+  features {}
 
+  subscription_id = var.subscription_id
+}
 
 resource "azurerm_resource_group" "teckno" {
   name     = "teckno-resources"
@@ -35,6 +32,15 @@ resource "azurerm_subnet" "teckno" {
   address_prefixes     = ["10.0.2.0/24"]
 }
 
+# New resource: Public IP
+resource "azurerm_public_ip" "teckno" {
+  name                = "teckno-pip"
+  location            = azurerm_resource_group.teckno.location
+  resource_group_name = azurerm_resource_group.teckno.name
+  allocation_method   = "Dynamic"
+  sku                 = "Basic"
+}
+
 resource "azurerm_network_interface" "teckno" {
   name                = "teckno-nic"
   location            = azurerm_resource_group.teckno.location
@@ -44,23 +50,21 @@ resource "azurerm_network_interface" "teckno" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.teckno.id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.teckno.id  # Associate public IP here
   }
 }
 
 resource "azurerm_linux_virtual_machine" "teckno" {
-  name                = "teckno-machine"
-  resource_group_name = azurerm_resource_group.teckno.name
-  location            = azurerm_resource_group.teckno.location
-  size                = "Standard_F2"
-  admin_username      = "adminuser"
-  network_interface_ids = [
-    azurerm_network_interface.teckno.id,
-  ]
+  name                  = "teckno-machine"
+  resource_group_name   = azurerm_resource_group.teckno.name
+  location              = azurerm_resource_group.teckno.location
+  size                  = "Standard_F2"
+  admin_username        = "adminuser"
+  network_interface_ids = [azurerm_network_interface.teckno.id]
 
   admin_ssh_key {
     username   = "adminuser"
     public_key = file("${path.module}/keys/id_rsa.pub")
-
   }
 
   os_disk {
