@@ -14,19 +14,19 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "teckno" {
-  name     = "teckno-resources"
+  name     = "teckno-github-action"
   location = "West Europe"
 }
 
 resource "azurerm_virtual_network" "teckno" {
-  name                = "teckno-network"
+  name                = "teckno-networks"
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.teckno.location
   resource_group_name = azurerm_resource_group.teckno.name
 }
 
 resource "azurerm_subnet" "teckno" {
-  name                 = "internal"
+  name                 = "internals"
   resource_group_name  = azurerm_resource_group.teckno.name
   virtual_network_name = azurerm_virtual_network.teckno.name
   address_prefixes     = ["10.0.2.0/24"]
@@ -34,7 +34,7 @@ resource "azurerm_subnet" "teckno" {
 
 # New resource: Public IP
 resource "azurerm_public_ip" "teckno" {
-  name                = "teckno-pip"
+  name                = "teckno-pips"
   location            = azurerm_resource_group.teckno.location
   resource_group_name = azurerm_resource_group.teckno.name
   allocation_method   = "Dynamic"
@@ -42,7 +42,7 @@ resource "azurerm_public_ip" "teckno" {
 }
 
 resource "azurerm_network_interface" "teckno" {
-  name                = "teckno-nic"
+  name                = "teckno-nics"
   location            = azurerm_resource_group.teckno.location
   resource_group_name = azurerm_resource_group.teckno.name
 
@@ -55,7 +55,7 @@ resource "azurerm_network_interface" "teckno" {
 }
 
 resource "azurerm_linux_virtual_machine" "teckno" {
-  name                  = "teckno-machine"
+  name                  = "teckno-machine-ga"
   resource_group_name   = azurerm_resource_group.teckno.name
   location              = azurerm_resource_group.teckno.location
   size                  = "Standard_F2"
